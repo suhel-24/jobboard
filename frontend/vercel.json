@@ -1,32 +1,5 @@
 {
-  "version": 2,
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/"
-    },
-    {
-      "src": "/about",
-      "dest": "/about"
-    },
-    {
-      "src": "/talents",
-      "dest": "/talents" 
-    },
-    {
-      "src": "/testimonials",
-      "dest": "/testimonials"
-    },
-    {
-      "src": "/jobs",
-      "dest": "/jobs"
-    },
-    {
-      "handle": "filesystem"
-    }
-  ]
-}
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/" }
+    ]
+  }
