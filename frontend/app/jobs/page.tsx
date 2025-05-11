@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import Jobcard from "@/components/home/Jobcard";
 import axios from "axios";
 
