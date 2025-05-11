@@ -1,5 +1,5 @@
 import React from "react";
-import { ClockIcon, DollarSignIcon, MapPinIcon } from "lucide-react";
+import { ClockIcon, Layers, MapPinIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +8,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import Image from "next/image";
 
 // Job card type
 interface JobCard {
@@ -16,12 +17,12 @@ interface JobCard {
   companyName: string;
   location: string;
   jobType: string;
-  salaryFrom: number;
-  salaryTo: number;
-  applicationDeadline: string;
+  salaryMin: number;
+  salaryMax: number;
+  deadline: string;
   description: string;
   logoSrc: string;
-  postedTime: string;
+  createdAt: string;
 }
 
 interface JobcardProps {
@@ -83,7 +84,7 @@ const Jobcard = ({ loading, displayedJobs }: JobcardProps) => {
               <CardHeader className="p-0">
                 <div className="flex justify-between items-start p-4">
                   <div className="w-[83px] h-[82px] rounded-[13.18px] overflow-hidden [background:linear-gradient(180deg,rgba(254,254,253,1)_0%,rgba(241,241,241,1)_100%)] border border-solid border-white shadow-[0px_0px_10.25px_#94949440]">
-                    <img
+                    <Image
                       className="w-[66px] h-[66px] mt-2 mx-auto object-cover"
                       alt="Company logo"
                       src={
@@ -91,12 +92,14 @@ const Jobcard = ({ loading, displayedJobs }: JobcardProps) => {
                           ? "https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png"
                           : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9OSO7DW1aOzl3fCDIAYOUr79t38xxHew5_w&s"
                       }
+                      width={66}
+                      height={66}
                     />
                   </div>
 
                   <Badge className="bg-[#afd8ff] text-black hover:bg-[#afd8ff] hover:text-black">
                     <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-sm">
-                      {getRelativeTime(job.postedTime)}
+                      {getRelativeTime(job.createdAt)}
                     </span>
                   </Badge>
                 </div>
@@ -126,9 +129,9 @@ const Jobcard = ({ loading, displayedJobs }: JobcardProps) => {
                   </div>
 
                   <div className="flex items-center gap-1">
-                    <DollarSignIcon className="h-4 w-4 text-[#5a5a5a]" />
+                    <Layers className="h-4 w-4 text-[#5a5a5a]" />
                     <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#5a5a5a] text-base">
-                      ₹{((job.salaryFrom + job.salaryTo) / 200000).toFixed(1)}{" "}
+                      ₹{((job.salaryMin + job.salaryMax) / 200000).toFixed(1)}{" "}
                       LPA
                     </span>
                   </div>

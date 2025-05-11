@@ -3,9 +3,11 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronsDown, ChevronsRight } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -36,7 +38,12 @@ import { cn } from "@/lib/utils";
 const formSchema = z.object({
   title: z.string().min(3, "Job title must be at least 3 characters"),
   company: z.string().min(2, "Company name is required"),
-  location: z.string().min(2, "Location is required"),
+  location: z.enum(
+    ["Delhi", "Bangalore", "Remote", "Mumbai", "Hyderabad", "Chennai"],
+    {
+      errorMap: () => ({ message: "Please select a location" }),
+    }
+  ),
   jobType: z.enum([
     "FullTime",
     "PartTime",
@@ -54,27 +61,39 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function CreateJobForm() {
   const [open, setOpen] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       company: "",
-      location: "",
+      location: undefined,
       description: "",
     },
   });
 
-  function onSubmit(data: FormValues) {
-    console.log(data);
-    // Here you would typically send the data to your API
-    setOpen(false);
+  async function onSubmit(data: FormValues) {
+    try {
+      setIsSubmitting(true);
+      const response = await axios.post("http://localhost:3001/jobs", data);
+      toast.success("Job posted successfully!");
+      console.log(response.data);
+      setOpen(false);
+      form.reset();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error posting job:", error);
+      toast.error("Failed to post job. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-[30px] bg-gradient-to-b from-[#A128FF] to-[#6100AD] text-white hover:opacity-90 font-semibold">
+        <Button className="rounded-[30px] bg-gradient-to-b from-[#A128FF] to-[#6100AD] text-white hover:opacity-90 font-semibold cursor-pointer">
           Create Jobs
         </Button>
       </DialogTrigger>
@@ -126,12 +145,23 @@ export function CreateJobForm() {
               <label htmlFor="location" className="text-base font-semibold">
                 Location
               </label>
-              <Input
-                id="location"
-                {...form.register("location")}
-                placeholder="Choose Preferred Location"
-                className="w-full h-[50px]"
-              />
+              <Select
+                onValueChange={(value) =>
+                  form.setValue("location", value as FormValues["location"])
+                }
+              >
+                <SelectTrigger id="location" className="w-full !h-[50px]">
+                  <SelectValue placeholder="Choose Preferred Location" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Delhi">Delhi</SelectItem>
+                  <SelectItem value="Bangalore">Bangalore</SelectItem>
+                  <SelectItem value="Mumbai">Mumbai</SelectItem>
+                  <SelectItem value="Hyderabad">Hyderabad</SelectItem>
+                  <SelectItem value="Chennai">Chennai</SelectItem>
+                  <SelectItem value="Remote">Remote</SelectItem>
+                </SelectContent>
+              </Select>
               {form.formState.errors.location && (
                 <p className="text-red-500 text-sm">
                   {form.formState.errors.location.message}
@@ -217,9 +247,9 @@ export function CreateJobForm() {
                     )}
                   >
                     {form.watch("deadline") ? (
-                        format(form.watch("deadline"), "PPP")
+                      format(form.watch("deadline"), "PPP")
                     ) : (
-                        <span>Pick a date</span>
+                      <span>Pick a date</span>
                     )}
                     <CalendarIcon className="mr-2 h-4 w-4" />
                   </Button>
@@ -262,16 +292,23 @@ export function CreateJobForm() {
             <Button
               type="button"
               variant="outline"
-              className="flex-1 bg-white border-[#222222] text-black !h-[58px] max-w-[200px]"
+              className="flex-1 bg-white border-[#222222] text-black !h-[58px] max-w-[200px] cursor-pointer"
               onClick={() => setOpen(false)}
             >
-              Save Draft
+              <div className="flex items-center justify-center gap-2">
+                <p>Save Draft</p>
+                <ChevronsDown className="w-4 h-4" />
+              </div>
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-[#00AAFF] text-white hover:bg-[#00AAFF]/90 !h-[58px] max-w-[200px]"
+              disabled={isSubmitting}
+              className="flex-1 bg-[#00AAFF] text-white hover:bg-[#00AAFF]/90 !h-[58px] max-w-[200px] cursor-pointer"
             >
-              Publish
+              <div className="flex items-center justify-center gap-2">
+                <p>{isSubmitting ? "Publishing..." : "Publish"}</p>
+                <ChevronsRight className="w-4 h-4" />
+              </div>
             </Button>
           </div>
         </form>

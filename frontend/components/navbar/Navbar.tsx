@@ -17,7 +17,7 @@ const NavLink = ({ href, active, children }: NavLinkProps) => {
       href={href}
       className={cn(
         "rounded-xl px-6 py-2 font-semibold text-[16px] transition-colors",
-        active ? "bg-white text-[#303030]" : "hover:bg-white/10"
+        active ? "bg-blue-500 text-white" : "hover:bg-white/"
       )}
     >
       {children}
