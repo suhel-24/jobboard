@@ -76,7 +76,8 @@ export function CreateJobForm() {
   async function onSubmit(data: FormValues) {
     try {
       setIsSubmitting(true);
-      const response = await axios.post("http://localhost:3001/jobs", data);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await axios.post(`${apiUrl}/jobs`, data);
       toast.success("Job posted successfully!");
       console.log(response.data);
       setOpen(false);

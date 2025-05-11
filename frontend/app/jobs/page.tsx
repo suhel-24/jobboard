@@ -43,7 +43,9 @@ export default function Page() {
     const fetchJobs = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:3001/jobs");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        console.log("API URL:", apiUrl);
+        const response = await axios.get(`${apiUrl}/jobs`);
         console.log("API Response:", response);
         setAllJobs(response.data.data);
         setDisplayedJobs(response.data.data);

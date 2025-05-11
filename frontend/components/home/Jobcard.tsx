@@ -74,7 +74,15 @@ const Jobcard = ({ loading, displayedJobs }: JobcardProps) => {
         </div>
       )}
 
-      {!loading && (
+      {!loading && displayedJobs.length === 0 && (
+        <div className="w-full flex justify-center items-center py-8">
+          <p className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#555555] text-lg">
+            No jobs available
+          </p>
+        </div>
+      )}
+
+      {!loading && displayedJobs.length > 0 && (
         <div className="grid grid-cols-4 gap-6 max-w-[1400px]">
           {displayedJobs.map((job) => (
             <Card
