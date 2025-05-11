@@ -62,7 +62,7 @@ const getRelativeTime = (timeString: string): string => {
 
 const Jobcard = ({ loading, displayedJobs }: JobcardProps) => {
   return (
-    <div className="flex flex-wrap justify-center w-full py-8 px-16">
+    <div className="flex flex-wrap justify-center w-full py-4 px-4 md:px-8 lg:px-16">
       {loading && (
         <div className="w-full flex justify-center items-center py-8">
           <div className="flex flex-col items-center gap-2">
@@ -83,11 +83,11 @@ const Jobcard = ({ loading, displayedJobs }: JobcardProps) => {
       )}
 
       {!loading && displayedJobs.length > 0 && (
-        <div className="grid grid-cols-4 gap-6 max-w-[1400px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
           {displayedJobs.map((job) => (
             <Card
               key={job.id}
-              className="w-[330px] relative rounded-xl shadow-[0px_0px_14px_#d3d3d326] gap-1 py-0 flex flex-col h-full"
+              className="relative rounded-xl shadow-[0px_0px_14px_#d3d3d326] gap-1 py-0 flex flex-col h-full"
             >
               <CardHeader className="p-0">
                 <div className="flex justify-between items-start p-4">
@@ -114,43 +114,45 @@ const Jobcard = ({ loading, displayedJobs }: JobcardProps) => {
               </CardHeader>
 
               <CardContent className="px-4 flex-grow">
-                <h3 className=" [font-family:'Satoshi_Variable-Bold',Helvetica] font-bold text-black text-xl">
+                <h3 className="[font-family:'Satoshi_Variable-Bold',Helvetica] font-bold text-black text-xl truncate">
                   {job.title}
                 </h3>
-                <p className="[font-family:'Satoshi_Variable-Medium',Helvetica] text-[#5a5a5a] font-medium text-base mt-1">
+                <p className="[font-family:'Satoshi_Variable-Medium',Helvetica] text-[#5a5a5a] font-medium text-base mt-1 truncate">
                   {job.companyName}
                 </p>
 
-                <div className="flex items-center gap-2.5 justify-between mt-6">
+                <div className="flex flex-wrap items-center gap-2 justify-between mt-6">
                   <div className="flex items-center gap-1">
                     <ClockIcon className="h-4 w-4 text-[#5a5a5a]" />
-                    <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#5a5a5a] text-base">
+                    <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#5a5a5a] text-sm">
                       {job.jobType}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-1">
                     <MapPinIcon className="h-4 w-4 text-[#5a5a5a]" />
-                    <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#5a5a5a] text-base">
+                    <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#5a5a5a] text-sm truncate max-w-[80px]">
                       {job.location}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-1">
                     <Layers className="h-4 w-4 text-[#5a5a5a]" />
-                    <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#5a5a5a] text-base">
-                      ₹{((job.salaryMin + job.salaryMax) / 200000).toFixed(1)}{" "}
-                      LPA
+                    <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#5a5a5a] text-sm whitespace-nowrap">
+                      ₹
+                      {((job.salaryMin + job.salaryMax) / 24 / 1000).toFixed(1)}
+                      K /month
                     </span>
                   </div>
                 </div>
 
-                <p className="mt-5 [font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#555555] text-sm whitespace-pre-line mb-6">
+                <p className="mt-5 [font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#555555] text-sm line-clamp-3 mb-6">
                   {job.description
                     .split("\n")
+                    .slice(0, 3)
                     .map((line: string, index: number) => (
                       <React.Fragment key={index}>
-                        {index > 0 && "\n"}• {line}
+                        {index > 0 && " "}• {line}
                       </React.Fragment>
                     ))}
                 </p>

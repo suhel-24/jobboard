@@ -80,18 +80,20 @@ export default function Page() {
         const matchesJobType =
           jobType === "all" ||
           !jobType ||
-          job.jobType.toLowerCase() === jobType.toLowerCase();
+          job.jobType.toLowerCase().replace(/\s+/g, "") ===
+            jobType.toLowerCase().replace(/\s+/g, "");
 
-        // Convert slider values directly to LPA
-        const minSalary = salaryRange[0] / 10;
-        const maxSalary = salaryRange[1] / 10;
+        // Convert slider values to monthly salary in thousands
+        const minSalaryMonthly = salaryRange[0] * 1000; // 10k monthly per slider unit
+        const maxSalaryMonthly = salaryRange[1] * 1000; // 10k monthly per slider unit
 
-        // Calculate job average salary in LPA
-        const jobAvgSalary = (job.salaryMin + job.salaryMax) / 200000;
+        // Calculate job average monthly salary
+        const jobAvgSalaryMonthly = (job.salaryMin + job.salaryMax) / 24; // Convert annual to monthly
 
-        // Filter based on average salary
+        // Filter based on average monthly salary
         const matchesSalary =
-          jobAvgSalary >= minSalary && jobAvgSalary <= maxSalary;
+          jobAvgSalaryMonthly >= minSalaryMonthly &&
+          jobAvgSalaryMonthly <= maxSalaryMonthly;
 
         return (
           matchesSearch && matchesLocation && matchesJobType && matchesSalary
@@ -107,10 +109,10 @@ export default function Page() {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="w-full bg-white my-2 rounded-lg h-[75px] flex items-center px-16">
-        <div className="flex h-6 items-center space-x-4">
+      <div className="w-full bg-white my-2 rounded-lg flex flex-col lg:flex-row lg:h-[75px] py-4 lg:py-0 items-start lg:items-center px-4 md:px-8 lg:px-16">
+        <div className="flex flex-col lg:flex-row lg:h-6 gap-4 lg:gap-0 w-full lg:items-center lg:space-x-4 lg:justify-between">
           {/* Search Input */}
-          <div className="relative w-[324px]">
+          <div className="relative w-full lg:max-w-[324px]">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#686868] h-4 w-4 " />
             <Input
               className="pl-10 text-[#222222] placeholder:text-[#686868] focus:outline-none border-0 hover:border-0 focus:border-0 focus:ring-0 ring-0 ring-offset-0"
@@ -120,16 +122,18 @@ export default function Page() {
             />
           </div>
 
-          <Separator orientation="vertical" />
+          <div className="hidden lg:block">
+            <div className="bg-gray-200 w-[1px] h-6"></div>
+          </div>
 
           {/* Location Dropdown */}
-          <div className="relative w-[324px]">
+          <div className="relative w-full lg:max-w-[324px] mt-4 lg:mt-0">
             <Select onValueChange={(value) => setLocation(value)}>
-              <SelectTrigger className="w-[260px] pl-10 text-[#686868] border-0 shadow-none hover:border-0 focus:border-0 focus:ring-0 focus:ring-offset-0 focus:outline-none">
+              <SelectTrigger className="w-full lg:w-[260px] pl-10 text-[#686868] border-0 shadow-none hover:border-0 focus:border-0 focus:ring-0 focus:ring-offset-0 focus:outline-none">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#686868] h-4 w-4" />
                 <SelectValue placeholder="Preferred Location" />
               </SelectTrigger>
-              <SelectContent className="w-[260px]">
+              <SelectContent className="w-full lg:w-[260px]">
                 <SelectItem value="all">All Locations</SelectItem>
                 <SelectItem value="bangalore">Bangalore</SelectItem>
                 <SelectItem value="mumbai">Mumbai</SelectItem>
@@ -141,19 +145,21 @@ export default function Page() {
             </Select>
           </div>
 
-          <Separator orientation="vertical" />
+          <div className="hidden lg:block">
+            <div className="bg-gray-300 w-[1px] h-6"></div>
+          </div>
 
           {/* Job Type Dropdown */}
-          <div className="relative w-[324px]">
+          <div className="relative w-full lg:max-w-[324px] mt-4 lg:mt-0">
             <Select onValueChange={(value) => setJobType(value)}>
-              <SelectTrigger className="w-[260px] pl-10 text-[#686868] border-0 shadow-none hover:border-0 focus:border-0 focus:ring-0 focus:ring-offset-0 focus:outline-none">
+              <SelectTrigger className="w-full lg:w-[260px] pl-10 text-[#686868] border-0 shadow-none hover:border-0 focus:border-0 focus:ring-0 focus:ring-offset-0 focus:outline-none">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#686868] h-4 w-4" />
                 <SelectValue placeholder="Job type" />
               </SelectTrigger>
-              <SelectContent className="w-[260px]">
+              <SelectContent className="w-full lg:w-[260px]">
                 <SelectItem value="all">All Job Types</SelectItem>
                 <SelectItem value="Full time">Full Time</SelectItem>
-                <SelectItem value="Part-time">Part Time</SelectItem>
+                <SelectItem value="Part time">Part Time</SelectItem>
                 <SelectItem value="Contract">Contract</SelectItem>
                 <SelectItem value="Freelance">Freelance</SelectItem>
                 <SelectItem value="Internship">Internship</SelectItem>
@@ -161,16 +167,18 @@ export default function Page() {
             </Select>
           </div>
 
-          <Separator orientation="vertical" />
+          <div className="hidden lg:block">
+            <div className="bg-gray-200 w-[1px] h-6"></div>
+          </div>
 
           {/* Salary Range Slider */}
-          <div className="flex flex-col gap-2 w-[324px]">
+          <div className="flex flex-col gap-2 w-full lg:max-w-[324px] mt-4 lg:mt-0">
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium text-[#222222]">
-                Salary Per Annum
+                Salary Per Month
               </span>
               <span className="text-sm font-medium text-[#222222]">
-                ₹{salaryRange[0] / 10} LPA - ₹{salaryRange[1] / 10} LPA
+                ₹{salaryRange[0]}K - ₹{salaryRange[1]}K
               </span>
             </div>
             <Slider
