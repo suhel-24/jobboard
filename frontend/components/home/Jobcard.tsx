@@ -139,21 +139,20 @@ const Jobcard = ({ loading, displayedJobs }: JobcardProps) => {
                   <div className="flex items-center gap-1">
                     <Layers className="h-4 w-4 text-[#5a5a5a]" />
                     <span className="[font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#5a5a5a] text-sm whitespace-nowrap">
-                      ₹
-                      {((job.salaryMin + job.salaryMax) / 24 / 1000).toFixed(1)}
-                      K /month
+                      ₹{((job.salaryMin + job.salaryMax) / 200000).toFixed(1)}{" "}
+                      LPA
                     </span>
                   </div>
                 </div>
 
-                <p className="mt-5 [font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#555555] text-sm line-clamp-3 mb-6">
+                <p className="mt-5 [font-family:'Satoshi_Variable-Medium',Helvetica] font-medium text-[#555555] text-sm mb-6">
                   {job.description
                     .split("\n")
                     .slice(0, 3)
                     .map((line: string, index: number) => (
-                      <React.Fragment key={index}>
-                        {index > 0 && " "}• {line}
-                      </React.Fragment>
+                      <span key={index} className="block">
+                        • {line}
+                      </span>
                     ))}
                 </p>
               </CardContent>
